@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start",
+    "start": "npm run generate && next build",
     "lint": "next lint"
   },
   "dependencies": {
