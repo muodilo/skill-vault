@@ -3,11 +3,10 @@ import { prisma } from "@/prisma";
 import { auth } from "@/auth";
 import { z } from "zod";
 
-const taskSchema = z.object({
+const reflectionSchema = z.object({
   skillId: z.string().min(1),
-  title: z.string().min(1),
+  content: z.string().min(1),
 });
-
 
 export async function POST(req: Request) {
   try {
@@ -17,15 +16,15 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const parsed = taskSchema.safeParse(body);
+    const parsed = reflectionSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
     }
 
-    const { skillId, title } = parsed.data;
+    const { skillId, content } = parsed.data;
 
-
+    // Check ownership
     const skill = await prisma.skill.findUnique({
       where: { id: skillId, userId: session.user.id },
     });
@@ -34,18 +33,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Skill not found" }, { status: 404 });
     }
 
-    const task = await prisma.task.create({
-      data: { title, skillId },
+    const reflection = await prisma.reflection.create({
+      data: { skillId, content },
     });
 
-    return NextResponse.json(task, { status: 201 });
+    return NextResponse.json(reflection, { status: 201 });
   } catch (error) {
-    console.error("[CREATE_TASK_ERROR]", error);
+    console.error("[CREATE_REFLECTION_ERROR]", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
-
+// Get all reflections for a skill
 export async function GET(req: Request) {
   try {
     const session = await auth();
@@ -68,14 +67,14 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Skill not found" }, { status: 404 });
     }
 
-    const tasks = await prisma.task.findMany({
+    const reflections = await prisma.reflection.findMany({
       where: { skillId },
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json(tasks, { status: 200 });
+    return NextResponse.json(reflections, { status: 200 });
   } catch (error) {
-    console.error("[GET_TASKS_ERROR]", error);
+    console.error("[GET_REFLECTIONS_ERROR]", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
