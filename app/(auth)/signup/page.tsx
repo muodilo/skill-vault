@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { BiError } from "react-icons/bi";
+import Link from "next/link";
 
 const formSchema = z
   .object({
@@ -153,9 +154,9 @@ export default function SignUpPage() {
 
         <p className="mt-6 text-center text-gray-600">
           Already have an account?{" "}
-          <a href="/" className="text-indigo-600 hover:underline font-medium">
+          <Link href="/" className="text-indigo-600 hover:underline font-medium">
             Sign in
-          </a>
+          </Link>
         </p>
       </div>
     
