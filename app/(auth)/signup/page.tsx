@@ -49,7 +49,7 @@ export default function SignUpPage() {
     });
 
     if (res.ok) {
-      router.push("/login");
+      router.push("/");
     } else {
       const error = await res.json();
       setServerError(error.error || "Something went wrong");
@@ -153,7 +153,7 @@ export default function SignUpPage() {
 
         <p className="mt-6 text-center text-gray-600">
           Already have an account?{" "}
-          <a href="/login" className="text-indigo-600 hover:underline font-medium">
+          <a href="/" className="text-indigo-600 hover:underline font-medium">
             Sign in
           </a>
         </p>
