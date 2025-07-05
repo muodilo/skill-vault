@@ -46,7 +46,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center  px-4">
+    
       <div className="bg-white shadow-lg rounded-lg max-w-md w-full p-10">
         <h1 className="text-3xl font-semibold mb-8 text-center text-gray-800">
           Sign In
@@ -95,7 +95,7 @@ export default function LoginPage() {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-md font-semibold text-lg"
+            className="w-full bg-primaryColor hover:bg-indigo-700 text-white py-3 rounded-md font-semibold text-lg"
           >
             {isSubmitting ? "Signing in..." : "Sign In"}
           </Button>
@@ -108,6 +108,5 @@ export default function LoginPage() {
           </a>
         </p>
       </div>
-    </div>
   );
 }

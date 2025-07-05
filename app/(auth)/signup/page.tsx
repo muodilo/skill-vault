@@ -57,11 +57,9 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
+
       <div className="bg-white shadow-lg rounded-lg max-w-md w-full p-10">
-        <h1 className="text-3xl font-semibold mb-8 text-center text-gray-800">
-          Create Account
-        </h1>
+
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
@@ -147,7 +145,7 @@ export default function SignUpPage() {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-md font-semibold text-lg"
+            className="w-full bg-primaryColor hover:bg-indigo-700 text-white py-3 rounded-md font-semibold text-lg"
           >
             {isSubmitting ? "Creating Account..." : "Sign Up"}
           </Button>
@@ -160,6 +158,6 @@ export default function SignUpPage() {
           </a>
         </p>
       </div>
-    </div>
+    
   );
 }
