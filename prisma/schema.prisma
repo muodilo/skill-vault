@@ -37,7 +37,7 @@ model Task {
   id        String   @id @default(cuid())
   title     String
   completed Boolean  @default(false)
-  skill     Skill    @relation(fields: [skillId], references: [id])
+  skill     Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
   skillId   String
 
   createdAt DateTime @default(now())
@@ -47,7 +47,7 @@ model Task {
 model Reflection {
   id        String   @id @default(cuid())
   content   String
-  skill     Skill    @relation(fields: [skillId], references: [id])
+  skill     Skill    @relation(fields: [skillId], references: [id],onDelete: Cascade)
   skillId   String
 
   createdAt DateTime @default(now())

@@ -4,6 +4,7 @@ import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { CiCalendar } from "react-icons/ci";
 import { Progress } from "@/components/ui/progress";
+import Link from "next/link";
 
 interface Task {
   id: string;
@@ -35,7 +36,7 @@ export default function SkillCard({
   return (
     <div className="border rounded-xl p-5 shadow bg-white">
       <div className="flex items-center justify-between mb-3">
-        <p className="font-semibold text-lg">{skill.title}</p>
+        <Link href={`dashboard/skill/${skill.id}`} className="font-semibold text-lg">{skill.title}</Link>
         <div className="flex items-center gap-2">
           <button onClick={onEdit}>
             <FaEdit />

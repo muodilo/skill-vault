@@ -8,6 +8,7 @@ export interface Task {
 export interface Reflection {
   id: string;
   content: string;
+  createdAt?: string | number | Date;
 }
 
 export interface Skill {
