@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { FiMenu, FiHome, FiGrid, FiClipboard, FiLogOut } from "react-icons/fi";
+import { FiMenu, FiHome, FiGrid, FiLogOut } from "react-icons/fi";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { FaVault } from "react-icons/fa6";
+import Link from "next/link";
+import { NavItem } from "../nav-items";
 
 export default function DashboardLayout({
   children,
@@ -31,13 +33,13 @@ export default function DashboardLayout({
       >
         <div>
           <div className="flex items-center justify-between px-4 py-4 ">
-            <div className="flex items-center gap-2">
+            <Link href={'/dashboard'} className="flex items-center gap-2">
               <div className="border p-2 bg-primaryColor rounded">
                 <FaVault className=" text-white" />
               </div>
               {collapsed? null :<p className="text-xl font-bold">SkillVault</p>}
               
-            </div>
+            </Link>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setCollapsed(!collapsed)}
@@ -59,12 +61,13 @@ export default function DashboardLayout({
               icon={<FiHome />}
               label="Dashboard"
               collapsed={collapsed}
+              href="/dashboard"
             />
-            <NavItem icon={<FiGrid />} label="Skills" collapsed={collapsed} />
-            <NavItem
-              icon={<FiClipboard />}
-              label="Tasks"
-              collapsed={collapsed}
+            <NavItem 
+            icon={<FiGrid />} 
+            label="Skills" 
+            collapsed={collapsed} 
+            href="/dashboard"
             />
           </nav>
         </div>
@@ -95,14 +98,21 @@ export default function DashboardLayout({
       )}
 
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="h-16 bg-white border-b px-4 flex items-center justify-between">
+        <header className="h-16 bg-white border-b px-4 flex items-center gap-2 lg:justify-center">
           <button
             onClick={() => setSidebarOpen(true)}
             className="text-2xl text-gray-700 lg:hidden"
           >
             <FiMenu />
           </button>
-          <h1 className="text-xl font-semibold">Dashboard</h1>
+          <Link href={'/dashboard'} className="flex items-center gap-2 lg:hidden">
+              <div className="border p-2 bg-primaryColor rounded">
+                <FaVault className=" text-white" />
+              </div>
+              {collapsed? null :<p className="text-xl font-bold">SkillVault</p>}
+              
+            </Link>
+            <input type="text" placeholder="Search Skill" className="border px-5 py-2 rounded-xl"/>
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 bg-gray-50">
@@ -113,26 +123,4 @@ export default function DashboardLayout({
   );
 }
 
-function NavItem({
-  icon,
-  label,
-  collapsed,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  collapsed: boolean;
-}) {
-  return (
-    <div className="flex items-center gap-4  p-2 rounded cursor-pointer">
-      <span className="text-xl">{icon}</span>
-      <span
-        className={cn(
-          "transition-opacity duration-200 inline-block",
-          collapsed ? "lg:hidden" : "lg:inline-block"
-        )}
-      >
-        {label}
-      </span>
-    </div>
-  );
-}
+
