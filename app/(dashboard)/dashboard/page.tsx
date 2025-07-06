@@ -4,6 +4,7 @@ import { FaBook } from "react-icons/fa";
 import { TiTick } from "react-icons/ti";
 import { MdOutlineWatchLater } from "react-icons/md";
 import { FcTodoList } from "react-icons/fc";
+import Skills from "@/components/skills/skills";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -13,7 +14,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main className="px-5 py-4">
+    <main className="py-4">
       <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
         <div className="border rounded-xl p-5 shadow flex items-center justify-between">
           <div>
@@ -63,6 +64,7 @@ export default async function DashboardPage() {
 
 
       </div>
+      <Skills/>
 
     </main>
   );

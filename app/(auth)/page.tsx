@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { BiError } from "react-icons/bi";
+import Link from "next/link";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -103,9 +104,9 @@ export default function LoginPage() {
 
         <p className="mt-6 text-center text-gray-600">
           Don’t have an account?{" "}
-          <a href="/signup" className="text-indigo-600 hover:underline font-medium">
+          <Link href="/signup" className="text-indigo-600 hover:underline font-medium">
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
   );
