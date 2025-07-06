@@ -17,8 +17,9 @@ export default function DashboardLayout({
   const [collapsed, setCollapsed] = useState(false);
 
   const handleLogout = () => {
-    signOut();
-  };
+  signOut({ callbackUrl: '/' });
+};
+
 
   return (
     <div className="flex h-screen overflow-hidden">
