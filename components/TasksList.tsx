@@ -20,6 +20,7 @@ export default function TasksList({
   const [taskName, setTaskName] = useState("");
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(false);
+  const [togglingTaskId, setTogglingTaskId] = useState<string | null>(null);
 
   const handleAddTask = async () => {
     if (!taskName.trim()) return;
@@ -54,6 +55,7 @@ export default function TasksList({
   };
 
   const handleToggleComplete = async (task: Task) => {
+    setTogglingTaskId(task.id);
     try {
       await fetch(`/api/tasks/${task.id}`, {
         method: "PUT",
@@ -64,6 +66,8 @@ export default function TasksList({
     } catch (err) {
       console.error(err);
       alert("Failed to update task");
+    } finally {
+      setTogglingTaskId(null);
     }
   };
 
@@ -84,7 +88,11 @@ export default function TasksList({
           disabled={loading}
           className="bg-blue-600 flex-nowrap h-10 w-10 text-white px-3 py-1 rounded"
         >
-          {loading ? <ImSpinner2 className="animate-spin animate"/> : <IoMdAdd className="cursor-pointer" />}
+          {loading ? (
+            <ImSpinner2 className="animate-spin" />
+          ) : (
+            <IoMdAdd className="cursor-pointer" />
+          )}
         </button>
       </div>
 
@@ -95,11 +103,21 @@ export default function TasksList({
             className="flex justify-between items-center border-b py-2"
           >
             <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => handleToggleComplete(task)}
-              />
+              <button
+                className="flex items-center gap-1"
+                onClick={() => handleToggleComplete(task)}
+                disabled={togglingTaskId === task.id}
+              >
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  readOnly
+                />
+                {togglingTaskId === task.id && (
+                  <ImSpinner2 className="animate-spin text-sm" />
+                )}
+              </button>
+
               <span
                 className={task.completed ? "line-through text-gray-500" : ""}
               >
