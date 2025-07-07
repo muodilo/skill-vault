@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import useSWR from "swr";
 import { Skill } from "@/types/skill";
 import { Progress } from "@/components/ui/progress";
 import { FaEdit } from "react-icons/fa";
@@ -11,40 +11,16 @@ import AddSkillModal from "./skills/AddSkillModal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FcTodoList } from "react-icons/fc";
 import { FaBook } from "react-icons/fa6";
+import { useState } from "react";
+
+const fetcher = (url: string) => fetch(url).then(res => {
+  if (!res.ok) throw new Error("Failed to fetch");
+  return res.json();
+});
 
 export default function SkillDetail({ skillId }: { skillId: string }) {
-  const [skill, setSkill] = useState<Skill | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: skill, error, isLoading, mutate } = useSWR<Skill>(`/api/skills/${skillId}`, fetcher);
   const [showModal, setShowModal] = useState(false);
-
-  const fetchSkill = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch(`/api/skills/${skillId}`);
-      if (!res.ok) {
-        throw new Error(`Failed to fetch skill: ${res.statusText}`);
-      }
-      const data = await res.json();
-      setSkill(data);
-    } catch (err: unknown) {
-      console.error("Error fetching skill:", err);
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred"
-      );
-      setSkill(null);
-    } finally {
-      setLoading(false);
-    }
-  }, [skillId]);
-  const onTasksUpdated = ()=>{
-    fetchSkill();
-  }
-
-  useEffect(() => {
-    fetchSkill();
-  }, [fetchSkill]);
 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this skill?")) return;
@@ -53,7 +29,6 @@ export default function SkillDetail({ skillId }: { skillId: string }) {
       if (!res.ok) {
         throw new Error("Failed to delete skill");
       }
-
       window.location.href = "/dashboard";
     } catch (err) {
       console.error("Error deleting skill:", err);
@@ -61,23 +36,23 @@ export default function SkillDetail({ skillId }: { skillId: string }) {
     }
   };
 
-  if (loading) return (
-  <div className="pt-5">
-    <div className="skeleton w-full mb-7  h-44 bg-slate-200 rounded-lg  animate-pulse">
-    </div>
-    <div className="skeleton w-full  h-96 bg-slate-200 rounded-lg  animate-pulse">
-    </div>
+  const onTasksUpdated = () => {
+    mutate();
+  };
 
-  </div>
+  if (isLoading) return (
+    <div className="pt-5">
+      <div className="skeleton w-full mb-7 h-44 bg-slate-200 rounded-lg animate-pulse"></div>
+      <div className="skeleton w-full h-96 bg-slate-200 rounded-lg animate-pulse"></div>
+    </div>
   );
-  if (error) return <p className="text-red-600">{error}</p>;
+
+  if (error) return <p className="text-red-600">{error.message || "Failed to load skill"}</p>;
   if (!skill) return <p>Skill not found.</p>;
 
   const totalTasks = skill.tasks.length;
   const completedTasks = skill.tasks.filter((t) => t.completed).length;
-  const progress = totalTasks
-    ? Math.round((completedTasks / totalTasks) * 100)
-    : 0;
+  const progress = totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return (
     <div className="pt-5">
@@ -110,22 +85,21 @@ export default function SkillDetail({ skillId }: { skillId: string }) {
 
       <Tabs defaultValue="tasks" className="w-full">
         <div className="border bg-white rounded-lg px-5">
-        <TabsList>
-          <TabsTrigger value="tasks">
-            <FcTodoList/>
-            <p>Tasks</p>
+          <TabsList>
+            <TabsTrigger value="tasks">
+              <FcTodoList /> <p>Tasks</p>
             </TabsTrigger>
-          <TabsTrigger value="reflections">
-            <FaBook/>
-            <p>Reflections</p> 
+            <TabsTrigger value="reflections">
+              <FaBook /> <p>Reflections</p>
             </TabsTrigger>
-        </TabsList>
+          </TabsList>
         </div>
+
         <TabsContent value="tasks">
-          <TasksList onTasksUpdated={onTasksUpdated} tasks={skill.tasks} skillId={skill.id} />
+          <TasksList tasks={skill.tasks} skillId={skill.id} onTasksUpdated={onTasksUpdated} />
         </TabsContent>
         <TabsContent value="reflections">
-            <ReflectionsList  reflections={skill.reflections} skillId={skill.id} />
+          <ReflectionsList reflections={skill.reflections} skillId={skill.id} />
         </TabsContent>
       </Tabs>
 
@@ -133,7 +107,7 @@ export default function SkillDetail({ skillId }: { skillId: string }) {
         <AddSkillModal
           skill={skill}
           onClose={() => setShowModal(false)}
-          onSkillUpdated={fetchSkill}
+          onSkillUpdated={() => mutate()}
         />
       )}
     </div>
