@@ -17,7 +17,16 @@ export default function DashboardStats() {
   const totalTasks = skills.reduce((sum, s) => sum + s.tasks.length, 0);
 
   if (isLoading) {
-    return <p>Loading stats...</p>;
+    return (
+        <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4 mb-16">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <div
+            key={index}
+            className="bg-gray-200 animate-pulse h-32 rounded-lg shadow"
+          ></div>
+        ))}
+        </div>
+    );
   }
 
   return (
