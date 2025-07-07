@@ -7,26 +7,29 @@ import { FcTodoList } from "react-icons/fc";
 import useSkills from "@/hooks/useSkills";
 
 export default function DashboardStats() {
-  const { skills, isLoading } = useSkills();
+  const { skills, isLoading, error } = useSkills();
 
-  const totalSkills = skills.length;
-  const completedSkills = skills.filter(
-    (s) => s.tasks.length > 0 && s.tasks.every((t) => t.completed)
-  ).length;
+  const totalSkills = skills?.length || 0;
+  const completedSkills =
+    skills?.filter((s) => s.tasks.length > 0 && s.tasks.every((t) => t.completed)).length || 0;
   const inProgressSkills = totalSkills - completedSkills;
-  const totalTasks = skills.reduce((sum, s) => sum + s.tasks.length, 0);
+  const totalTasks = skills?.reduce((sum, s) => sum + s.tasks.length, 0) || 0;
 
   if (isLoading) {
     return (
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4 mb-16">
+      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4 mb-16">
         {Array.from({ length: 4 }).map((_, index) => (
           <div
             key={index}
             className="bg-gray-200 animate-pulse h-32 rounded-lg shadow"
           ></div>
         ))}
-        </div>
+      </div>
     );
+  }
+
+  if (error) {
+    return <p className="text-red-600">Error loading dashboard stats.</p>;
   }
 
   return (
