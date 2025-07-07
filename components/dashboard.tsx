@@ -1,0 +1,66 @@
+"use client";
+
+import { FaBook } from "react-icons/fa";
+import { TiTick } from "react-icons/ti";
+import { MdOutlineWatchLater } from "react-icons/md";
+import { FcTodoList } from "react-icons/fc";
+import useSkills from "@/hooks/useSkills";
+
+export default function DashboardStats() {
+  const { skills, isLoading } = useSkills();
+
+  const totalSkills = skills.length;
+  const completedSkills = skills.filter(
+    (s) => s.tasks.length > 0 && s.tasks.every((t) => t.completed)
+  ).length;
+  const inProgressSkills = totalSkills - completedSkills;
+  const totalTasks = skills.reduce((sum, s) => sum + s.tasks.length, 0);
+
+  if (isLoading) {
+    return <p>Loading stats...</p>;
+  }
+
+  return (
+    <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
+      <div className="border rounded-xl p-5 shadow flex items-center justify-between">
+        <div>
+          <p className="text-neutral-500">Total Skills</p>
+          <h1 className="text-3xl font-semibold">{totalSkills}</h1>
+        </div>
+        <div className="bg-primaryColor/10 p-2 rounded">
+          <FaBook className="text-2xl text-primaryColor" />
+        </div>
+      </div>
+
+      <div className="border rounded-xl p-5 shadow flex items-center justify-between">
+        <div>
+          <p className="text-neutral-500">Completed</p>
+          <h1 className="text-3xl font-semibold">{completedSkills}</h1>
+        </div>
+        <div className="bg-green-500/10 p-2 rounded">
+          <TiTick className="text-2xl text-white bg-green-500 rounded-full" />
+        </div>
+      </div>
+
+      <div className="border rounded-xl p-5 shadow flex items-center justify-between">
+        <div>
+          <p className="text-neutral-500">In Progress</p>
+          <h1 className="text-3xl font-semibold">{inProgressSkills}</h1>
+        </div>
+        <div className="bg-yellow-500/10 p-2 rounded">
+          <MdOutlineWatchLater className="text-2xl bg-yellow-500 text-white p-1 rounded-full" />
+        </div>
+      </div>
+
+      <div className="border rounded-xl p-5 shadow flex items-center justify-between">
+        <div>
+          <p className="text-neutral-500">Total Tasks</p>
+          <h1 className="text-3xl font-semibold">{totalTasks}</h1>
+        </div>
+        <div className="bg-primaryColor/10 p-2 rounded">
+          <FcTodoList className="text-2xl text-primaryColor" />
+        </div>
+      </div>
+    </div>
+  );
+}
